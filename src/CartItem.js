@@ -9,8 +9,8 @@ class CartItem extends React.Component {
             qty : 1,
             img : ''
         }    }
-        increaseQuantity(){
-          console.log('test');
+        increaseQuantity=()=>{
+          console.log('this',this.state);
             
         }
     render(){
