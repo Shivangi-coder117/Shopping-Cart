@@ -8,7 +8,24 @@ class CartItem extends React.Component {
             title : 'Phone',
             qty : 1,
             img : ''
-        };    
+        }
+        this.testing(); 
+    }
+    testing(){
+        const promise = new Promise((resolve,reject)=>{
+            setTimeout(() =>{
+                resolve('done');
+            },5000);
+        
+    })
+    //Promise Function 
+    // promise.then(() =>
+    // {
+    //   this.setState({ qty : 100});
+
+    //   console.log('state',this.state);
+    // });
+
     }
         increaseQuantity=()=>{
          // console.log('this',this.state);
