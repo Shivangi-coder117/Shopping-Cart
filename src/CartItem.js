@@ -1,23 +1,7 @@
 import React from 'react';
 
 class CartItem extends React.Component {
-    constructor(){
-        super();
-        this.state = {
-            price : 999,
-            title : 'Phone',
-            qty : 1,
-            img : ''
-        }
-        this.testing(); 
-    }
-    testing(){
-        const promise = new Promise((resolve,reject)=>{
-            setTimeout(() =>{
-                resolve('done');
-            },5000);
-        
-    })
+   
     //Promise Function 
     // promise.then(() =>
     // {
@@ -26,7 +10,7 @@ class CartItem extends React.Component {
     //   console.log('state',this.state);
     // });
 
-    }
+    
         increaseQuantity=()=>{
          // console.log('this',this.state);
           //setState form 1
@@ -58,7 +42,8 @@ class CartItem extends React.Component {
           }
         
     render() {
-        const{price,title,qty}=this.state;
+        console.log('this.props',this.props);
+        const{price,title,qty}=this.props.product;
         return (
             <div class ="cart-item">
                <div className="left-block">
