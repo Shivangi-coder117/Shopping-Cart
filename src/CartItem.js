@@ -2,23 +2,7 @@ import React from 'react';
 
 class CartItem extends React.Component {
    
-    //Promise Function 
-    // promise.then(() =>
-    // {
-    //   this.setState({ qty : 100});
-
-    //   console.log('state',this.state);
-    // });
-
-    
         increaseQuantity=()=>{
-         // console.log('this',this.state);
-          //setState form 1
-          //this.setState({
-
-            //qty: this.state.qty +1
-          //});
-          //setState form 2
           this.setState((prevState) => {
               return {
                  qty : prevState.qty +1
@@ -45,7 +29,8 @@ class CartItem extends React.Component {
         console.log('this.props',this.props);
         const{price,title,qty}=this.props.product;
         return (
-            <div class ="cart-item">
+            <div className="cart-item">
+                {this.props.jsx}
                <div className="left-block">
                    <img style={styles.image}/>
                </div>  
@@ -70,8 +55,8 @@ class CartItem extends React.Component {
                        <img
                         alt ="delete" 
                         className='action-icons'
-                         src='https://cdn-icons.flaticon.com/png/128/484/premium/484611.png?token=exp=1644229142~hmac=66693c290ff0bfec41dafe0dfb942cca'
-                         />
+                        src='https://cdn-icons.flaticon.com/png/128/484/premium/484611.png?token=exp=1644229142~hmac=66693c290ff0bfec41dafe0dfb942cca'
+                        />
                    </div>
 
                </div>
