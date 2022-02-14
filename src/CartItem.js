@@ -5,7 +5,12 @@ class CartItem extends React.Component {
     render() {
         console.log('this.props',this.props);
         const{price,title,qty}=this.props.product;
-        const {product, onIncreaseQuantity,onDecreaseQuantity}=this.props;
+        const {
+            product, 
+            onIncreaseQuantity,
+            onDecreaseQuantity,
+            onDeleteProduct
+            }=this.props;
         return (
             <div className="cart-item">
                 {this.props.jsx}
@@ -35,6 +40,7 @@ class CartItem extends React.Component {
                         alt ="delete" 
                         className='action-icons'
                         src='https://cdn-icons.flaticon.com/png/128/484/premium/484611.png?token=exp=1644229142~hmac=66693c290ff0bfec41dafe0dfb942cca'
+                        onClick={() => onDeleteProduct(product.id)}
                         />
                    </div>
 
