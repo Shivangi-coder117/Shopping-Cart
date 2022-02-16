@@ -1,108 +1,193 @@
 import React from "react";
 import Cart from './Cart';
-import Navbar from './Navbar'
+import Navbar from './Navbar';
+
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+
+
 class App extends React.Component {
-  constructor(){
+  constructor() {
     super();
     this.state = {
-        products :[
-        {
-        price : 6000,
-        title : 'Watch',
-        qty : 1,
-        img : 'https://cdn.shopify.com/s/files/1/0057/8938/4802/products/main1.png?v=1640628318',
-        id:1
-
-        },
-        {
-        price : 65000,
-        title : 'Phone',
-        qty : 10,
-        img : 'https://oasis.opstatics.com/content/dam/oasis/page/2021/operation/1217/homepage/mo/02-OnePlus-9.jpg',
-        id:2
-        },
-        {
-            price : 999,
-        title : 'Laptop',
-        qty : 4,
-        img : 'https://cdn.thewirecutter.com/wp-content/media/2020/12/macbook-2048px-9-2x1-1.jpg?auto=webp&quality=75&crop=2:1&width=1024',
-        id:3
-
-        }
-        ]
+      products: [],
+      loading: true
     }
-}
+    this.db = firebase.firestore();
+  }
+  // componentDidMount(){
+  //      firebase
+  //           .firestore()
+  //           .collection('products')
+  //           .get()
+  //           .then((snapshot)=>{
+  //             console.log(snapshot);
 
-handleIncreaseQuantity = (product)=>{
-    console.log('Hey please increase the qty of ',product);
-    const {products}= this.state;
-    const  index = products.indexOf(product);
-    
-    products[index].qty +=1;
+  //           snapshot.docs.map((doc) => {
+  //             console.log(doc.data())
+  //           });
 
-    this.setState({
-         products
-})
-}
-handleDecreaseQuantity = (product)=>{
-console.log('Hey please increase the qty of ',product);
-const {products}= this.state;
-const  index = products.indexOf(product);
+  //           const products = snapshot.docs.map((doc)=>{
+  //             const data = doc.data();
 
-if(products[index].qty === 0){
-    return;
-}
-products[index].qty -=1;
+  //             data['id'] = doc.id;
+  //             return data;
+  //           })
 
-this.setState({
-     products
-})
-}
-getCartCount = () => {
-  const{products} = this.state;
-  let count =0;
-products.forEach((product) => {
-  count += product.qty;
-})
+  //           this.setState({
+  //             products  
+  //           })
 
-  
+  //           })
 
-  return count;
-}
+  // }
+  componentDidMount() {
+   
+    this.db
+      .collection("products")
+      // .orderBy('price','desc')
+      .onSnapshot(snapshot => {
+        const products = snapshot.docs.map(doc => {
+          const data = doc.data();
+          data["id"] = doc.id;
+          return data;
+        });
+        this.setState({ products: products, loading: false });
+      });
+  }
 
-getCartTotal = () =>{
-   const {products} = this.state;
-    
-   let cartTotal = 0;
+  handleIncreaseQuantity = (product) => {
+    console.log('Hey please increase the qty of ', product);
+    const { products } = this.state;
+    const index = products.indexOf(product);
 
-   products.map((product)=> {
-    cartTotal = cartTotal + product.qty * product.price
-     
-   })
-   return cartTotal;
-}
+    // products[index].qty += 1;
+
+    // this.setState({
+    //   products,
+    //   loading: false
+    // })
+    const docRef = this.db.collection('products').doc(products[index].id);
+
+    docRef 
+       .update({
+         qty: products[index].qty +1
+       })
+       .then(()=>{
+         console.log('Document updated Successfully')
+       })
+       .catch((error)=>{
+         console.log('Error',error);
+
+       })
+  }
+  handleDecreaseQuantity = (product) => {
+    console.log('Hey please increase the qty of ', product);
+    const { products } = this.state;
+    const index = products.indexOf(product);
+
+    if (products[index].qty === 0) {
+      return;
+    }
+    // products[index].qty -= 1;
+
+    // this.setState({
+    //   products
+    // })
+    const docRef = this.db.collection('products').doc(products[index].id);
+
+    docRef 
+       .update({
+         qty: products[index].qty - 1
+       })
+       .then(()=>{
+         console.log('Document updated Successfully')
+       })
+       .catch((error)=>{
+         console.log('Error',error);
+
+       })
+  }
+  getCartCount = () => {
+    const { products } = this.state;
+    let count = 0;
+    products.forEach((product) => {
+      count += product.qty;
+    })
 
 
-handleDeleteProduct = (id)=>{
-const{products}=this.state;
-const items = products.filter((item) => item.id !== id);
 
-this.setState({
-    products : items
-})
-}
+    return count;
+  }
+
+  getCartTotal = () => {
+    const { products } = this.state;
+
+    let cartTotal = 0;
+
+    products.map((product) => {
+      if (product.qty > 0) {
+        cartTotal += product.qty * product.price;
+      }
+      // return '';
+
+    });
+    return cartTotal;
+  }
+
+
+  handleDeleteProduct = (id) => {
+    const { products } = this.state;
+    // const items = products.filter((item) => item.id !== id);
+
+    // this.setState({
+    //   products: items
+    // })
+    const docRef = this.db.collection('products').doc(id);
+
+    docRef
+        .delete()
+        .then(()=>{
+          console.log('Deleted Successfully')
+        })
+        .catch((error)=>{
+          console.log('Error',error);
+ 
+        })
+  }
+
+  addProduct=()=>{
+    this.db
+       .collection('products')
+      
+       .add({
+         img:"",
+         price:100,
+         qty:3,
+         title : 'washing machine'
+       })
+       .then((docRef)=>{
+           console.log('Product has been added',docRef);
+       })
+       .catch((error)=>{
+         console.log('Error ',error);
+       })
+  }
   render() {
-    const {products} = this.state;
+    const { products, loading } = this.state;
     return (
       <div className="App">
         <Navbar count={this.getCartCount()} />
+        {/* <button onClick={this.addProduct} style={{padding : 20, fontsize:20 }}> Add a Product</button> */}
         <Cart
-         products={products}
-         onIncreaseQuantity={this.handleIncreaseQuantity}
-         onDecreaseQuantity={this.handleDecreaseQuantity}
-        onDeleteProduct = {this.handleDeleteProduct}
+          products={products}
+          onIncreaseQuantity={this.handleIncreaseQuantity}
+          onDecreaseQuantity={this.handleDecreaseQuantity}
+          onDeleteProduct={this.handleDeleteProduct}
+
         />
-        <div style = {{padding : 10, fontSize : 20  }}>Total : {this.getCartTotal()}</div>
+        {loading && <h1>Loading Products..</h1>}
+        <div style={{ padding: 10, fontSize: 20 }}>Total : {this.getCartTotal()}</div>
       </div>
     );
   }
